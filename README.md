@@ -38,6 +38,18 @@ City.filter({name: 'city1'}).count # => 1
 City.filter({people: 500}) # => 1
 ```
 
+#### Operator
+
+You can specify selector operator: 
+
+* $and (default operator)
+* $or
+
+```ruby
+City.filter({name: 'city1', people: 1000}, '$and').count # => 0
+City.filter({name: 'city1', people: 1000}, '$or').count # => 1
+```
+
 #### Rails controller
 
 ```ruby

@@ -7,11 +7,15 @@ module Mongoid
       ##
       # Applies params scopes to current scope
       #
-      def filter(filtering_params)
-        results = self.where(nil)
+      def filter(filtering_params, operator='$and')
+        results = self.all
+        selectors = []
+
         filtering_params.each do |key, value|
-          results = results.public_send("filter_with_#{key}", value) if value.present?
+          selectors.push self.public_send("filter_with_#{key}", value).selector if value.present?
         end
+
+        results.selector = {operator => selectors} if selectors.size > 0
         results
       end
 
