@@ -77,7 +77,7 @@ class City
   field :name
   normalize :name
 
-  filter_by_normalize(:name)
+  filter_by_normalized(:name)
 end
 
 City.create(name: 'Cíty1')
