@@ -22,6 +22,7 @@ describe Mongoid::Filterable do
     it 'should filter by default filter' do
       City.create(name: 'city1')
       City.create(name: 'city2')
+      expect(City.filter({name: 'city'}).count).to eq(2)
       expect(City.filter({name: 'city1'}).count).to eq(1)
       expect(City.filter({name: 'city1'}).first.name).to eq('city1')
     end

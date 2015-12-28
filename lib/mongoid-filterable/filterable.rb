@@ -26,7 +26,7 @@ module Mongoid
         if filter
           self.scope "filter_with_#{attr}", filter
         else
-          self.scope "filter_with_#{attr}", lambda{ |value| where(attr => value)}
+          self.scope "filter_with_#{attr}", lambda{ |value| where(attr => Regexp.new(value))}
         end
       end
 
