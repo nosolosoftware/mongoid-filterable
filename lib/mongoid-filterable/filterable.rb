@@ -26,7 +26,11 @@ module Mongoid
         if filter
           self.scope "filter_with_#{attr}", filter
         else
-          self.scope "filter_with_#{attr}", lambda{ |value| where(attr => value)}
+          if self.fields[attr.to_s].type == String
+            self.scope "filter_with_#{attr}", lambda{ |value| where(attr => Regexp.new(value)) }
+          else
+            self.scope "filter_with_#{attr}", lambda{ |value| where(attr => value) }
+          end
         end
       end
 

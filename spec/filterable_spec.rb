@@ -5,11 +5,13 @@ describe Mongoid::Filterable do
     include Mongoid::Document
     include Mongoid::Filterable
 
-    field :name
-    field :people
+    field :name, type: String
+    field :code, type: Symbol
+    field :people, type: Integer
     field :country_normalized
 
     filter_by(:name)
+    filter_by(:code)
     filter_by(:people, lambda{|value| where(:people.gt => value)})
     filter_by_normalized(:country)
   end
@@ -20,8 +22,16 @@ describe Mongoid::Filterable do
 
   context 'when use default operator' do
     it 'should filter by default filter' do
+      City.create(code: :code1)
+      City.create(code: :code2)
+      expect(City.filter({code: :code1}).count).to eq(1)
+      expect(City.filter({code: :code1}).first.code).to eq(:code1)
+    end
+
+    it 'should filter by match filter' do
       City.create(name: 'city1')
       City.create(name: 'city2')
+      expect(City.filter({name: 'city'}).count).to eq(2)
       expect(City.filter({name: 'city1'}).count).to eq(1)
       expect(City.filter({name: 'city1'}).first.name).to eq('city1')
     end
