@@ -12,7 +12,9 @@ module Mongoid
         selectors = []
 
         filtering_params.each do |key, value|
-          selectors.push self.public_send("filter_with_#{key}", value).selector if value.present?
+          if value.present? && self.respond_to?("filter_with_#{key}")
+            selectors.push self.public_send("filter_with_#{key}", value).selector
+          end
         end
 
         results.selector = {operator => selectors} if selectors.size > 0

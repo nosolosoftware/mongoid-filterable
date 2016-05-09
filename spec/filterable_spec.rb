@@ -66,4 +66,12 @@ describe Mongoid::Filterable do
       expect(City.filter({name: 'city1', people: '2000'}, '$or').count).to eq(1)
     end
   end
+
+  context 'when use invalid filter' do
+    it 'should ignore filter' do
+      City.create(name: 'city1')
+      City.create(name: 'city2')
+      expect(City.filter({invalid: 'val'}).count).to eq(2)
+    end
+  end
 end
