@@ -1,6 +1,6 @@
-development:
-  sessions:
+test:
+  clients:
     default:
-      database: mongoid
+      database: filterable_test
       hosts:
         - localhost:27017
