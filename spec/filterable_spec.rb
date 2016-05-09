@@ -74,4 +74,12 @@ describe Mongoid::Filterable do
       expect(City.filter({invalid: 'val'}).count).to eq(2)
     end
   end
+
+  context 'when filter params are nil' do
+    it 'should ignore filter' do
+      City.create(name: 'city1')
+      City.create(name: 'city2')
+      expect(City.filter(nil).count).to eq(2)
+    end
+  end
 end
