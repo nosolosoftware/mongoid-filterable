@@ -1,2 +1,2 @@
-require "mongoid-filterable/version"
-require "mongoid-filterable/filterable"
+require 'mongoid-filterable/version'
+require 'mongoid-filterable/filterable'
