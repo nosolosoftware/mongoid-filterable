@@ -29,7 +29,7 @@ class City
   field :people
 
   filter_by(:name)
-  filter_by(:people, lambda{|value| where(:people.gt => value)})
+  filter_by(:people, ->(value) { where(:people.gt => value) })
 end
 
 City.create(name: 'city1', people: 100)
@@ -41,7 +41,7 @@ City.filter({people: 500}) # => 1
 
 #### Operator
 
-You can specify selector operator: 
+You can specify selector operator:
 
 * $and (default operator)
 * $or
@@ -58,7 +58,7 @@ class CitiesController
   def index
     respond_with City.filter(filter_params)
   end
-  
+
   private
 
   def filter_params

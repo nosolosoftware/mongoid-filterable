@@ -12,7 +12,7 @@ describe Mongoid::Filterable do
 
     filter_by(:name)
     filter_by(:code)
-    filter_by(:people, lambda{|value| where(:people.gt => value)})
+    filter_by(:people, ->(value) { where(:people.gt => value) })
     filter_by_normalized(:country)
   end
 
@@ -24,30 +24,38 @@ describe Mongoid::Filterable do
     it 'should filter by default filter' do
       City.create(code: :code1)
       City.create(code: :code2)
-      expect(City.filter({code: :code1}).count).to eq(1)
-      expect(City.filter({code: :code1}).first.code).to eq(:code1)
+      expect(City.filter(code: :code1).count).to eq(1)
+      expect(City.filter(code: :code1).first.code).to eq(:code1)
     end
 
     it 'should filter by match filter' do
       City.create(name: 'city1')
       City.create(name: 'city2')
-      expect(City.filter({name: 'city'}).count).to eq(2)
-      expect(City.filter({name: 'city1'}).count).to eq(1)
-      expect(City.filter({name: 'city1'}).first.name).to eq('city1')
+      expect(City.filter(name: 'city').count).to eq(2)
+      expect(City.filter(name: 'city1').count).to eq(1)
+      expect(City.filter(name: 'city1').first.name).to eq('city1')
     end
 
     it 'should filter by custom filter' do
       City.create(people: 100)
       City.create(people: 1000)
-      expect(City.filter({people: 500}).count).to eq(1)
-      expect(City.filter({people: 500}).first.people).to eq(1000)
+      expect(City.filter(people: 500).count).to eq(1)
+      expect(City.filter(people: 500).first.people).to eq(1000)
     end
 
     it 'should filter by normalized filter' do
       City.create(country_normalized: 'spain')
       City.create(country_normalized: 'france')
-      expect(City.filter({country: 'spain'}).count).to eq(1)
-      expect(City.filter({country: 'spain'}).first.country_normalized).to eq('spain')
+      expect(City.filter(country: 'spain').count).to eq(1)
+      expect(City.filter(country: 'spain').first.country_normalized).to eq('spain')
+    end
+
+    it 'should respect previous selector' do
+      City.create(name: 'city1', people: 100)
+      City.create(name: 'city2', people: 1000)
+      City.create(name: 'city3', people: 2000)
+      expect(City.where(name: 'city2').filter(people: '500').count).to eq(1)
+      expect(City.where(name: 'city2').filter(people: '500').first.name).to eq('city2')
     end
   end
 
@@ -71,7 +79,7 @@ describe Mongoid::Filterable do
     it 'should ignore filter' do
       City.create(name: 'city1')
       City.create(name: 'city2')
-      expect(City.filter({invalid: 'val'}).count).to eq(2)
+      expect(City.filter(invalid: 'val').count).to eq(2)
     end
   end
 

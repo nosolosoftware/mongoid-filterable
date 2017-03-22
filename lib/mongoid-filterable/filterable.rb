@@ -7,33 +7,31 @@ module Mongoid
       ##
       # Applies params scopes to current scope
       #
-      def filter(filtering_params, operator='$and')
+      def filter(filtering_params, operator = '$and')
         return self unless filtering_params
-        results = self.all
+        results = all
         selectors = []
+        criteria = Mongoid::Criteria.new(self)
 
         filtering_params.each do |key, value|
-          if value.present? && self.respond_to?("filter_with_#{key}")
-            selectors.push self.public_send("filter_with_#{key}", value).selector
+          if value.present? && respond_to?("filter_with_#{key}")
+            selectors.push criteria.public_send("filter_with_#{key}", value).selector
           end
         end
 
-        results.selector = {operator => selectors} if selectors.size > 0
-        results
+        selectors.empty? ? results : results.where(operator => selectors)
       end
 
       ##
       # Adds attr scope
       #
-      def filter_by(attr, filter=nil)
+      def filter_by(attr, filter = nil)
         if filter
-          self.scope "filter_with_#{attr}", filter
+          scope "filter_with_#{attr}", filter
+        elsif fields[attr.to_s].type == String
+          scope "filter_with_#{attr}", ->(value) { where(attr => Regexp.new(value)) }
         else
-          if self.fields[attr.to_s].type == String
-            self.scope "filter_with_#{attr}", lambda{ |value| where(attr => Regexp.new(value)) }
-          else
-            self.scope "filter_with_#{attr}", lambda{ |value| where(attr => value) }
-          end
+          scope "filter_with_#{attr}", ->(value) { where(attr => value) }
         end
       end
 
@@ -43,8 +41,8 @@ module Mongoid
       #
       def filter_by_normalized(attr)
         normalized_name = (attr.to_s + '_normalized').to_sym
-        self.scope "filter_with_#{attr}", lambda{ |value|
-          where( normalized_name => Regexp.new(I18n.transliterate(value), 'i') )
+        scope "filter_with_#{attr}", lambda { |value|
+          where(normalized_name => Regexp.new(I18n.transliterate(value), 'i'))
         }
       end
     end
