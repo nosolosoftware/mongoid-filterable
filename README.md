@@ -16,6 +16,10 @@ Or install it yourself as:
 
     $ gem install mongoid-filterable
 
+## Compatibility
+
+Mongoid Filterable supports Mongoid versions 3, 4, 5, and now 6.
+
 ## Usage
 
 #### Model

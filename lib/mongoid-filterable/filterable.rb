@@ -11,7 +11,7 @@ module Mongoid
         return self unless filtering_params
         results = all
         selectors = []
-        criteria = Mongoid::Criteria.new(self)
+        criteria = unscoped
 
         filtering_params.each do |key, value|
           if value.present? && respond_to?("filter_with_#{key}")
