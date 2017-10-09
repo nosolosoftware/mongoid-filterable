@@ -5,6 +5,9 @@ describe Mongoid::Filterable do
     include Mongoid::Document
     include Mongoid::Filterable
 
+    default_scope -> { where(active: true) }
+
+    field :active, type: Boolean, default: true
     field :name, type: String
     field :code, type: Symbol
     field :people, type: Integer
@@ -21,6 +24,12 @@ describe Mongoid::Filterable do
   end
 
   context 'when use default operator' do
+    it 'should create correct selector' do
+      expect(City.filter(code: :code1).selector).to eq(
+        {"active" => true, "$and" => [{"code" => :code1}]}
+      )
+    end
+
     it 'should filter by default filter' do
       City.create(code: :code1)
       City.create(code: :code2)
