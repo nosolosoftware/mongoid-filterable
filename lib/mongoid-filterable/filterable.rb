@@ -15,7 +15,11 @@ module Mongoid
 
         filtering_params.each do |key, value|
           if value.present? && respond_to?("filter_with_#{key}")
-            selectors.push criteria.public_send("filter_with_#{key}", value).selector
+            if value.is_a?(Array) && scopes["filter_with_#{key}".to_sym][:scope].arity > 1
+              selectors.push criteria.public_send("filter_with_#{key}", *value).selector
+            else
+              selectors.push criteria.public_send("filter_with_#{key}", value).selector
+            end
           end
         end
 
