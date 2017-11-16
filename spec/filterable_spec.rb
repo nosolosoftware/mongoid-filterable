@@ -16,6 +16,11 @@ describe Mongoid::Filterable do
     filter_by(:name)
     filter_by(:code)
     filter_by(:people, ->(value) { where(:people.gt => value) })
+    filter_by(:people_in, ->(value) { where(:people.in => value) })
+    filter_by(:people_range, (lambda do |range_start, range_end|
+      where(:people.lte => range_end,
+            :people.gte => range_start)
+    end))
     filter_by_normalized(:country)
   end
 
@@ -97,6 +102,24 @@ describe Mongoid::Filterable do
       City.create(name: 'city1')
       City.create(name: 'city2')
       expect(City.filter(nil).count).to eq(2)
+    end
+  end
+
+  context 'when value is an array' do
+    it 'filter should receive all the values' do
+      City.create(people: 100)
+      City.create(people: 500)
+      City.create(people: 1000)
+      City.create(people: 1000)
+      expect(City.filter(people_range: [500, 1000]).count).to eq(3)
+    end
+
+    it 'does not break compatibility with filters receiving only one param as array' do
+      City.create(people: 100)
+      City.create(people: 500)
+      City.create(people: 1000)
+      City.create(people: 1000)
+      expect(City.filter(people_in: [500, 100]).count).to eq(2)
     end
   end
 end

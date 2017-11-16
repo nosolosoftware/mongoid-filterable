@@ -34,6 +34,10 @@ class City
 
   filter_by(:name)
   filter_by(:people, ->(value) { where(:people.gt => value) })
+  filter_by(:people_range, (lambda do |range_start, range_end| 
+    where(:people.lte => range_end,
+          :people.gte => range_start)
+  end))
 end
 
 City.create(name: 'city1', people: 100)
@@ -53,6 +57,14 @@ You can specify selector operator:
 ```ruby
 City.filter({name: 'city1', people: 1000}, '$and').count # => 0
 City.filter({name: 'city1', people: 1000}, '$or').count # => 1
+```
+
+#### Range
+
+Searches with more than one param is also available:
+
+```ruby
+City.filter(people_range: [500, 1000]).count # => 1
 ```
 
 #### Rails controller
