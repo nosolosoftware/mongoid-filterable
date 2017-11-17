@@ -122,4 +122,14 @@ describe Mongoid::Filterable do
       expect(City.filter(people_in: [500, 100]).count).to eq(2)
     end
   end
+
+  context 'when filter is applied on a scope' do
+    it 'previous scope is maintained' do
+      City.create(name: '2', people: 100)
+      City.create(name: '1', people: 500)
+      City.create(name: '1', people: 1000)
+      City.create(name: '1', people: 1000)
+      expect(City.where(name: '2').filter(nil).count).to eq(1)
+    end
+  end
 end
