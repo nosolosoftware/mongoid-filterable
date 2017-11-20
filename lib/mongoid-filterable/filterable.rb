@@ -8,7 +8,7 @@ module Mongoid
       # Applies params scopes to current scope
       #
       def filter(filtering_params, operator = '$and')
-        return self unless filtering_params
+        return all unless filtering_params
         results = all
         selectors = []
         criteria = unscoped
