@@ -18,7 +18,7 @@ Or install it yourself as:
 
 ## Compatibility
 
-Mongoid Filterable supports Mongoid versions 3, 4, 5, and now 6.
+Mongoid Filterable supports Mongoid versions 3, 4, 5, 6 and now 7.
 
 ## Usage
 
@@ -34,7 +34,7 @@ class City
 
   filter_by(:name)
   filter_by(:people, ->(value) { where(:people.gt => value) })
-  filter_by(:people_range, (lambda do |range_start, range_end| 
+  filter_by(:people_range, (lambda do |range_start, range_end|
     where(:people.lte => range_end,
           :people.gte => range_start)
   end))
