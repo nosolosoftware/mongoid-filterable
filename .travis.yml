@@ -4,6 +4,11 @@ rvm:
   - 2.5.1
 before_install: gem install bundler -v 1.16.1
 
+gemfile:
+  - Gemfile
+  - gemfiles/mongoid-6.0.gemfile
+  - gemfiles/mongoid-7.0.gemfile
+
 services:
   - mongodb
 
