@@ -13,6 +13,7 @@ describe Mongoid::Filterable do
     field :people, type: Integer
     field :country_normalized
 
+    filter_by(:active)
     filter_by(:name)
     filter_by(:code)
     filter_by(:people, ->(value) { where(:people.gt => value) })
@@ -25,7 +26,7 @@ describe Mongoid::Filterable do
   end
 
   before do
-    City.destroy_all
+    City.unscoped.destroy_all
   end
 
   context 'when use default operator' do
@@ -120,6 +121,14 @@ describe Mongoid::Filterable do
       City.create(people: 1000)
       City.create(people: 1000)
       expect(City.filter(people_in: [500, 100]).count).to eq(2)
+    end
+  end
+
+  context 'when value is a Boolean' do
+    it 'should filter using a query' do
+      City.create(name: 'city1')
+      City.create(name: 'city2', active: false)
+      expect(City.unscoped.filter(active: false).count).to eq(1)
     end
   end
 
