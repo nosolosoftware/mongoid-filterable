@@ -14,7 +14,8 @@ module Mongoid
         criteria = unscoped
 
         filtering_params.each do |key, value|
-          if !value.nil? && respond_to?("filter_with_#{key}")
+          # false is permitted in order to work properly with boolean fields
+          if (value.present? || value == false) && respond_to?("filter_with_#{key}")
             if value.is_a?(Array) && scopes["filter_with_#{key}".to_sym][:scope].arity > 1
               selectors.push criteria.public_send("filter_with_#{key}", *value).selector
             else

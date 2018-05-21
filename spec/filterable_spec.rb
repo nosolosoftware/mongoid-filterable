@@ -124,6 +124,22 @@ describe Mongoid::Filterable do
     end
   end
 
+  context 'when value is nil' do
+    it 'should ignore filter' do
+      City.create(people: 100)
+      City.create(people: 500)
+      expect(City.filter(people: nil).count).to eq(2)
+    end
+  end
+
+  context 'when value is empty string' do
+    it 'should ignore filter' do
+      City.create(people: 100)
+      City.create(people: 500)
+      expect(City.filter(people: '').count).to eq(2)
+    end
+  end
+
   context 'when value is a Boolean' do
     it 'should filter using a query' do
       City.create(name: 'city1')
