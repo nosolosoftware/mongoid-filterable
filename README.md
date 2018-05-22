@@ -1,4 +1,5 @@
 # Mongoid::Filterable
+![Build Status](https://travis-ci.org/nosolosoftware/mongoid-filterable.svg?branch=master)
 
 Let you add scopes to mongoid document for filters.
 
