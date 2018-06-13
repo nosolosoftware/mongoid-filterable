@@ -7,15 +7,15 @@ module Mongoid
       ##
       # Applies params scopes to current scope
       #
-      def filter(filtering_params, operator = '$and')
+      def filter(filtering_params, operator='$and')
         return all unless filtering_params
         results = all
         selectors = []
         criteria = unscoped
 
         filtering_params.each do |key, value|
-          # false is permitted in order to work properly with boolean fields
-          if (value.present? || value == false) && respond_to?("filter_with_#{key}")
+          if respond_to?("filter_with_#{key}")
+            # check the number of arguments of filter scope
             if value.is_a?(Array) && scopes["filter_with_#{key}".to_sym][:scope].arity > 1
               selectors.push criteria.public_send("filter_with_#{key}", *value).selector
             else
@@ -30,7 +30,7 @@ module Mongoid
       ##
       # Adds attr scope
       #
-      def filter_by(attr, filter = nil)
+      def filter_by(attr, filter=nil)
         if filter
           scope "filter_with_#{attr}", filter
         elsif fields[attr.to_s].type == String
