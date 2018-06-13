@@ -32,7 +32,7 @@ describe Mongoid::Filterable do
   context 'when use default operator' do
     it 'should create correct selector' do
       expect(City.filter(code: :code1).selector).to eq(
-        {"active" => true, "$and" => [{"code" => :code1}]}
+        'active' => true, '$and' => [{'code' => :code1}]
       )
     end
 
@@ -125,18 +125,18 @@ describe Mongoid::Filterable do
   end
 
   context 'when value is nil' do
-    it 'should ignore filter' do
+    it 'should apply filter' do
       City.create(people: 100)
       City.create(people: 500)
-      expect(City.filter(people: nil).count).to eq(2)
+      expect(City.filter(people: nil).count).to eq(0)
     end
   end
 
   context 'when value is empty string' do
-    it 'should ignore filter' do
+    it 'should apply filter' do
       City.create(people: 100)
       City.create(people: 500)
-      expect(City.filter(people: '').count).to eq(2)
+      expect(City.filter(people: '').count).to eq(0)
     end
   end
 

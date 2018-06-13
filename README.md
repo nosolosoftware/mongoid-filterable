@@ -45,6 +45,7 @@ City.create(name: 'city1', people: 100)
 City.create(name: 'city2', people: 1000)
 City.filter({name: 'city'}).count # => 2
 City.filter({name: 'city1'}).count # => 1
+City.filter({name: ''}).count # => 0
 City.filter({people: 500}) # => 1
 ```
 
