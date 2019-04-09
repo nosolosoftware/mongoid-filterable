@@ -43,10 +43,10 @@ end
 
 City.create(name: 'city1', people: 100)
 City.create(name: 'city2', people: 1000)
-City.filter({name: 'city'}).count # => 2
-City.filter({name: 'city1'}).count # => 1
-City.filter({name: ''}).count # => 0
-City.filter({people: 500}) # => 1
+City.filtrate({name: 'city'}).count # => 2
+City.filtrate({name: 'city1'}).count # => 1
+City.filtrate({name: ''}).count # => 0
+City.filtrate({people: 500}) # => 1
 ```
 
 #### Operator
@@ -57,8 +57,8 @@ You can specify selector operator:
 * $or
 
 ```ruby
-City.filter({name: 'city1', people: 1000}, '$and').count # => 0
-City.filter({name: 'city1', people: 1000}, '$or').count # => 1
+City.filtrate({name: 'city1', people: 1000}, '$and').count # => 0
+City.filtrate({name: 'city1', people: 1000}, '$or').count # => 1
 ```
 
 #### Range
@@ -66,7 +66,7 @@ City.filter({name: 'city1', people: 1000}, '$or').count # => 1
 Searches with more than one param is also available:
 
 ```ruby
-City.filter(people_range: [500, 1000]).count # => 1
+City.filtrate(people_range: [500, 1000]).count # => 1
 ```
 
 #### Rails controller
@@ -74,7 +74,7 @@ City.filter(people_range: [500, 1000]).count # => 1
 ```ruby
 class CitiesController
   def index
-    respond_with City.filter(filter_params)
+    respond_with City.filtrate(filter_params)
   end
 
   private
@@ -101,7 +101,7 @@ end
 
 City.create(name: 'Cíty1')
 City.create(name: 'Cíty2')
-City.filter({name: 'city1'}).count # => 1
+City.filtrate({name: 'city1'}).count # => 1
 ```
 
 ## Contributing

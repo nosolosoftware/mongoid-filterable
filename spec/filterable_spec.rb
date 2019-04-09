@@ -31,7 +31,7 @@ describe Mongoid::Filterable do
 
   context 'when use default operator' do
     it 'should create correct selector' do
-      expect(City.filter(code: :code1).selector).to eq(
+      expect(City.filtrate(code: :code1).selector).to eq(
         'active' => true, '$and' => [{'code' => :code1}]
       )
     end
@@ -39,38 +39,38 @@ describe Mongoid::Filterable do
     it 'should filter by default filter' do
       City.create(code: :code1)
       City.create(code: :code2)
-      expect(City.filter(code: :code1).count).to eq(1)
-      expect(City.filter(code: :code1).first.code).to eq(:code1)
+      expect(City.filtrate(code: :code1).count).to eq(1)
+      expect(City.filtrate(code: :code1).first.code).to eq(:code1)
     end
 
     it 'should filter by match filter' do
       City.create(name: 'city1')
       City.create(name: 'city2')
-      expect(City.filter(name: 'city').count).to eq(2)
-      expect(City.filter(name: 'city1').count).to eq(1)
-      expect(City.filter(name: 'city1').first.name).to eq('city1')
+      expect(City.filtrate(name: 'city').count).to eq(2)
+      expect(City.filtrate(name: 'city1').count).to eq(1)
+      expect(City.filtrate(name: 'city1').first.name).to eq('city1')
     end
 
     it 'should filter by custom filter' do
       City.create(people: 100)
       City.create(people: 1000)
-      expect(City.filter(people: 500).count).to eq(1)
-      expect(City.filter(people: 500).first.people).to eq(1000)
+      expect(City.filtrate(people: 500).count).to eq(1)
+      expect(City.filtrate(people: 500).first.people).to eq(1000)
     end
 
     it 'should filter by normalized filter' do
       City.create(country_normalized: 'spain')
       City.create(country_normalized: 'france')
-      expect(City.filter(country: 'spain').count).to eq(1)
-      expect(City.filter(country: 'spain').first.country_normalized).to eq('spain')
+      expect(City.filtrate(country: 'spain').count).to eq(1)
+      expect(City.filtrate(country: 'spain').first.country_normalized).to eq('spain')
     end
 
     it 'should respect previous selector' do
       City.create(name: 'city1', people: 100)
       City.create(name: 'city2', people: 1000)
       City.create(name: 'city3', people: 2000)
-      expect(City.where(name: 'city2').filter(people: '500').count).to eq(1)
-      expect(City.where(name: 'city2').filter(people: '500').first.name).to eq('city2')
+      expect(City.where(name: 'city2').filtrate(people: '500').count).to eq(1)
+      expect(City.where(name: 'city2').filtrate(people: '500').first.name).to eq('city2')
     end
   end
 
@@ -78,7 +78,7 @@ describe Mongoid::Filterable do
     it 'should filter using and query' do
       City.create(name: 'city1', people: 100)
       City.create(name: 'city2', people: 2000)
-      expect(City.filter({name: 'city1', people: '2000'}, '$and').count).to eq(0)
+      expect(City.filtrate({name: 'city1', people: '2000'}, '$and').count).to eq(0)
     end
   end
 
@@ -86,7 +86,7 @@ describe Mongoid::Filterable do
     it 'should filter using or query' do
       City.create(name: 'city1', people: 100)
       City.create(name: 'city2', people: 2000)
-      expect(City.filter({name: 'city1', people: '2000'}, '$or').count).to eq(1)
+      expect(City.filtrate({name: 'city1', people: '2000'}, '$or').count).to eq(1)
     end
   end
 
@@ -94,7 +94,7 @@ describe Mongoid::Filterable do
     it 'should ignore filter' do
       City.create(name: 'city1')
       City.create(name: 'city2')
-      expect(City.filter(invalid: 'val').count).to eq(2)
+      expect(City.filtrate(invalid: 'val').count).to eq(2)
     end
   end
 
@@ -102,7 +102,7 @@ describe Mongoid::Filterable do
     it 'should ignore filter' do
       City.create(name: 'city1')
       City.create(name: 'city2')
-      expect(City.filter(nil).count).to eq(2)
+      expect(City.filtrate(nil).count).to eq(2)
     end
   end
 
@@ -112,7 +112,7 @@ describe Mongoid::Filterable do
       City.create(people: 500)
       City.create(people: 1000)
       City.create(people: 1000)
-      expect(City.filter(people_range: [500, 1000]).count).to eq(3)
+      expect(City.filtrate(people_range: [500, 1000]).count).to eq(3)
     end
 
     it 'does not break compatibility with filters receiving only one param as array' do
@@ -120,7 +120,7 @@ describe Mongoid::Filterable do
       City.create(people: 500)
       City.create(people: 1000)
       City.create(people: 1000)
-      expect(City.filter(people_in: [500, 100]).count).to eq(2)
+      expect(City.filtrate(people_in: [500, 100]).count).to eq(2)
     end
   end
 
@@ -128,7 +128,7 @@ describe Mongoid::Filterable do
     it 'should apply filter' do
       City.create(people: 100)
       City.create(people: 500)
-      expect(City.filter(people: nil).count).to eq(0)
+      expect(City.filtrate(people: nil).count).to eq(0)
     end
   end
 
@@ -136,7 +136,7 @@ describe Mongoid::Filterable do
     it 'should apply filter' do
       City.create(people: 100)
       City.create(people: 500)
-      expect(City.filter(people: '').count).to eq(0)
+      expect(City.filtrate(people: '').count).to eq(0)
     end
   end
 
@@ -144,7 +144,7 @@ describe Mongoid::Filterable do
     it 'should filter using a query' do
       City.create(name: 'city1')
       City.create(name: 'city2', active: false)
-      expect(City.unscoped.filter(active: false).count).to eq(1)
+      expect(City.unscoped.filtrate(active: false).count).to eq(1)
     end
   end
 
@@ -154,7 +154,7 @@ describe Mongoid::Filterable do
       City.create(name: '1', people: 500)
       City.create(name: '1', people: 1000)
       City.create(name: '1', people: 1000)
-      expect(City.where(name: '2').filter(nil).count).to eq(1)
+      expect(City.where(name: '2').filtrate(nil).count).to eq(1)
     end
   end
 end
