@@ -58,11 +58,18 @@ describe Mongoid::Filterable do
       expect(City.filtrate(people: 500).first.people).to eq(1000)
     end
 
-    it 'should filter by normalized filter' do
-      City.create(country_normalized: 'spain')
-      City.create(country_normalized: 'france')
-      expect(City.filtrate(country: 'spain').count).to eq(1)
-      expect(City.filtrate(country: 'spain').first.country_normalized).to eq('spain')
+    context 'when using a normalized filter' do
+      it 'should filter' do
+        City.create(country_normalized: 'spain')
+        City.create(country_normalized: 'france')
+        expect(City.filtrate(country: 'spain').count).to eq(1)
+        expect(City.filtrate(country: 'spain').first.country_normalized).to eq('spain')
+      end
+
+      it 'should admit special regexp chars' do
+        expect { City.filtrate(country: 'spain (') }.to_not raise_error
+        expect { City.filtrate(country: 'spain [') }.to_not raise_error
+      end
     end
 
     it 'should respect previous selector' do

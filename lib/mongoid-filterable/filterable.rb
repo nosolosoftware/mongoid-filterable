@@ -47,7 +47,7 @@ module Mongoid
       def filter_by_normalized(attr)
         normalized_name = (attr.to_s + '_normalized').to_sym
         scope "filter_with_#{attr}", lambda { |value|
-          where(normalized_name => Regexp.new(I18n.transliterate(value), 'i'))
+          where(normalized_name => Regexp.new(Regexp.escape(I18n.transliterate(value)), 'i'))
         }
       end
     end
