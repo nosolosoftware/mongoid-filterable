@@ -9,9 +9,10 @@ module Mongoid
       #
       def filtrate(filtering_params, operator='$and')
         return all unless filtering_params
+
         results = all
         selectors = []
-        criteria = unscoped
+        criteria = Mongoid::Criteria.new(self).unscoped
 
         filtering_params.each do |key, value|
           if respond_to?("filter_with_#{key}")

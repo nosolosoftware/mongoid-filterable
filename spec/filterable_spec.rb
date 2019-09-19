@@ -34,6 +34,9 @@ describe Mongoid::Filterable do
       expect(City.filtrate(code: :code1).selector).to eq(
         'active' => true, '$and' => [{'code' => :code1}]
       )
+      expect(City.unscoped.where(active: true).filtrate(code: :code1).selector).to eq(
+        'active' => true, '$and' => [{'code' => :code1}]
+      )
     end
 
     it 'should filter by default filter' do
