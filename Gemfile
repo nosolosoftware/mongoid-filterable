@@ -4,4 +4,4 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'rake'
-gem 'mongoid', "~> 5.0"
+gem 'mongoid', "~> 7.0"
