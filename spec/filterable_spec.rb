@@ -32,10 +32,10 @@ describe Mongoid::Filterable do
   context 'when use default operator' do
     it 'should create correct selector' do
       expect(City.filtrate(code: :code1).selector).to eq(
-        'active' => true, '$and' => [{'code' => :code1}]
+        'active' => true, '$and' => [{'active' => true, 'code' => :code1}]
       )
       expect(City.unscoped.where(active: true).filtrate(code: :code1).selector).to eq(
-        'active' => true, '$and' => [{'code' => :code1}]
+        'active' => true, '$and' => [{'active' => true, 'code' => :code1}]
       )
     end
 
@@ -165,6 +165,16 @@ describe Mongoid::Filterable do
       City.create(name: '1', people: 1000)
       City.create(name: '1', people: 1000)
       expect(City.where(name: '2').filtrate(nil).count).to eq(1)
+    end
+  end
+
+  context 'with method chaining' do
+    it 'applies all scopes' do
+      City.create(name: '2', people: 100)
+      City.create(name: '1', people: 500)
+      City.create(name: '3', people: 100)
+
+      expect(City.filtrate(name: '2').filtrate(people_range: [100, 500]).count).to eq(1)
     end
   end
 end

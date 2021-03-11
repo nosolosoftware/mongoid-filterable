@@ -2,7 +2,8 @@ sudo: false
 language: ruby
 rvm:
   - 2.6.0
-before_install: gem install bundler -v 1.16.1
+  - 2.7.2
+before_install: gem install bundler -v 2.2.14
 
 gemfile:
   - Gemfile
@@ -11,10 +12,3 @@ gemfile:
 
 services:
   - mongodb
-
-addons:
-  apt:
-    sources:
-      - mongodb-3.4-precise
-    packages:
-      - mongodb-org-server

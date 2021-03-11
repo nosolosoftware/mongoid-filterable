@@ -12,7 +12,7 @@ module Mongoid
 
         results = all
         selectors = []
-        criteria = Mongoid::Criteria.new(self).unscoped
+        criteria = Mongoid::Criteria.new(results).unscoped
 
         filtering_params.each do |key, value|
           if respond_to?("filter_with_#{key}")
